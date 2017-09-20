@@ -22,14 +22,14 @@
         android:id="@+id/textView" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/switchResultBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:onClick="openNew"
-        android:text="Show Detail"
+        android:text="Show Bill"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         app:layout_constraintLeft_toRightOf="@+id/textView"
         app:layout_constraintRight_toRightOf="parent"

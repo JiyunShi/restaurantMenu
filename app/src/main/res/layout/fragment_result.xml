@@ -12,12 +12,27 @@
         android:background="@android:color/darker_gray"/>
 
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/resultTxt"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="543dp"
-        android:layout_marginLeft="2dp"
-        android:text="result fragment" />
+        android:layout_height="match_parent"
+        >
 
+        <!-- TODO: Update blank fragment layout -->
+        <LinearLayout
+            android:id="@+id/resultMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="2dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/resultTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Bill Details"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

@@ -95,9 +95,9 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(int index, int qty, ArrayList<MenuItem> current) {
+    public void onButtonPressed(ArrayList<String> qtys,ArrayList<String> items,ArrayList<String> prices ) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(index,qty, current);
+            mListener.onFragmentInteraction(qtys,items, prices);
         }
     }
 
@@ -130,7 +130,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(int index, int qty, ArrayList<MenuItem> currentMenu);
+        void onFragmentInteraction(ArrayList<String> qtys,ArrayList<String> items,ArrayList<String> prices);
     }
 
 
@@ -261,30 +261,37 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
 
     public void onClick(View view){
 
+        ArrayList<String> qtys= new ArrayList<String>();
+        ArrayList<String> selectedItems = new ArrayList<String>();
+        ArrayList<String> prices = new ArrayList<String>();
+
         for(int i=0; i<addbtns.size();i++){
-
+            TextView itemqty = itemqtys.get(i);
+            int qty = Integer.parseInt(itemqty.getText().toString());
             if(view.getId()==addbtns.get(i).getId()){
-                TextView itemqty = itemqtys.get(i);
-                int qty = Integer.parseInt(itemqty.getText().toString());
-                qty++;
 
+
+                qty++;
                 itemqty.setText(String.valueOf(qty));
-                this.onButtonPressed(i,qty,currentMenu);
+
 
             }else if(view.getId()==reducebtns.get(i).getId()){
-                TextView itemqty = itemqtys.get(i);
-                int qty = Integer.parseInt(itemqty.getText().toString());
+
                 if(qty>0) qty--;
                 itemqty.setText(String.valueOf(qty));
-                this.onButtonPressed(i,qty,currentMenu);
+
             }
 
-
+            if(qty>0){
+                qtys.add(String.valueOf(qty));
+                selectedItems.add(currentMenu.get(i).name);
+                prices.add(String.valueOf(currentMenu.get(i).price));
+            }
 
 
         }
 
-
+        if(qtys.size()>=0) this.onButtonPressed(qtys,selectedItems,prices);
 
     }
 
