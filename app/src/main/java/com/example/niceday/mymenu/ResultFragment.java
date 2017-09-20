@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -24,9 +27,10 @@ public class ResultFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private int qty;
+    private String name;
+    private double price;
+    private TextView resultTxt;
     private OnFragmentInteractionListener mListener;
 
     public ResultFragment() {
@@ -54,17 +58,24 @@ public class ResultFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (getArguments() != null) {
+            qty = getArguments().getInt("qty");
+            name = getArguments().getString("name");
+            price = getArguments().getDouble("price");
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_result, container, false);
+        View _view = inflater.inflate(R.layout.fragment_result, container,false);
+
+        resultTxt = (TextView) _view.findViewById(R.id.resultTxt);
+        resultTxt.setText(name);
+        return _view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -83,6 +94,8 @@ public class ResultFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+
     }
 
     @Override

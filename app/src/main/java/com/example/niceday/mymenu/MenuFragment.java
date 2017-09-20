@@ -14,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import static java.lang.System.currentTimeMillis;
 
 
 /**
@@ -32,6 +35,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
 
     ArrayList<MenuItem> lunchMenu = new ArrayList<MenuItem>();
     ArrayList<MenuItem> dinnerMenu = new ArrayList<MenuItem>();
+    ArrayList<MenuItem> currentMenu = new ArrayList<MenuItem>();
 
     ArrayList<Button> addbtns = new ArrayList<Button>();
     ArrayList<Button> reducebtns = new ArrayList<Button>();
@@ -84,16 +88,16 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         View _view = inflater.inflate(R.layout.fragment_menu, container,false);
 
         LinearLayout rootMenu = _view.findViewById(R.id.rootMenu);
-
-        this.setupMenu(lunchMenu,rootMenu);
+        TextView menuTitle = _view.findViewById(R.id.menuTitleTxt);
+        this.setupMenu(rootMenu, menuTitle);
 
         return _view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(int index, int qty, ArrayList<MenuItem> current) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(index,qty, current);
         }
     }
 
@@ -126,7 +130,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(int index, int qty, ArrayList<MenuItem> currentMenu);
     }
 
 
@@ -153,7 +157,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         dinnerMenu.add(dinnerItem4);
 
     }
-
 
     public LinearLayout insertMenuItem(int index, ArrayList<MenuItem> menuLists){
         LinearLayout menuLine = new LinearLayout(getContext());
@@ -222,24 +225,39 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         return menuLine;
     }
 
-    public void setupMenu(ArrayList<MenuItem> menuList, LinearLayout rootMenu){
+    public void setupMenu(LinearLayout rootMenu, TextView title){
 
-        for(int i=0; i<menuList.size();i++) rootMenu.addView(this.insertMenuItem(i, lunchMenu));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 11);
+        cal.set(Calendar.MINUTE, 30);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long lunchStartMilli = cal.getTimeInMillis();
+        cal.set(Calendar.HOUR_OF_DAY, 15);
+        long lunchOverDinnerStartMilli = cal.getTimeInMillis();
+        cal.add(Calendar.HOUR_OF_DAY,8);
+        long dinnerOverMilli = cal.getTimeInMillis();
+        long currentTime = currentTimeMillis();
+
+        if(currentTime>=lunchStartMilli&&currentTime<=lunchOverDinnerStartMilli){
+            currentMenu = lunchMenu;
+            title.setText("Lunch Menu");
+            for(int i=0; i<lunchMenu.size();i++) rootMenu.addView(this.insertMenuItem(i, lunchMenu));
+        }
+
+        else if(currentTime>=lunchOverDinnerStartMilli&&currentTime<=dinnerOverMilli){
+            currentMenu=dinnerMenu;
+            for(int i=0; i<dinnerMenu.size();i++) rootMenu.addView(this.insertMenuItem(i, dinnerMenu));
+            title.setText("Dinner Menu");
+        }else{
+            title.setText("Closing now");
+        }
+
+
+
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void onClick(View view){
 
@@ -251,13 +269,14 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
                 qty++;
 
                 itemqty.setText(String.valueOf(qty));
-
+                this.onButtonPressed(i,qty,currentMenu);
 
             }else if(view.getId()==reducebtns.get(i).getId()){
                 TextView itemqty = itemqtys.get(i);
                 int qty = Integer.parseInt(itemqty.getText().toString());
                 if(qty>0) qty--;
                 itemqty.setText(String.valueOf(qty));
+                this.onButtonPressed(i,qty,currentMenu);
             }
 
 

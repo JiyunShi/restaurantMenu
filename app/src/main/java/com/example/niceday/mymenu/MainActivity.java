@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener, ResultFragment.OnFragmentInteractionListener {
 
     ResultFragment resultFragment= new ResultFragment();
@@ -30,6 +32,26 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    public void onFragmentInteraction(int index, int qty, ArrayList<MenuItem> currentMenu){
+
+        double price = currentMenu.get(index).price;
+        String name = currentMenu.get(index).name;
+
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("qty", qty);
+        bundle.putString("name", name);
+        bundle.putDouble("price",price);
+
+        resultFragment.setArguments(bundle);
+        if(resultFragment.isAdded()){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.detach(resultFragment).attach(resultFragment).commit();
+        }
+
+    }
+
 
     public void openNew(View view) {
 
