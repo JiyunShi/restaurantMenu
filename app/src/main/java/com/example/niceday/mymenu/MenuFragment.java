@@ -1,12 +1,19 @@
 package com.example.niceday.mymenu;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 /**
@@ -17,11 +24,18 @@ import android.view.ViewGroup;
  * Use the {@link MenuFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment implements View.OnClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    ArrayList<MenuItem> lunchMenu = new ArrayList<MenuItem>();
+    ArrayList<MenuItem> dinnerMenu = new ArrayList<MenuItem>();
+
+    ArrayList<Button> addbtns = new ArrayList<Button>();
+    ArrayList<Button> reducebtns = new ArrayList<Button>();
+    ArrayList<TextView> itemqtys = new ArrayList<TextView>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -58,13 +72,22 @@ public class MenuFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        this.createMenu();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_menu, container, false);
+
+        View _view = inflater.inflate(R.layout.fragment_menu, container,false);
+
+        LinearLayout rootMenu = _view.findViewById(R.id.rootMenu);
+
+        this.setupMenu(lunchMenu,rootMenu);
+
+        return _view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,4 +128,149 @@ public class MenuFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
+
+
+    //create MenuList
+    public void createMenu(){
+
+        MenuItem lunchItem1 = new MenuItem("Chili Cheese Fries", "Crispy Fries topped with Chili & Cheese", 7.95);
+        MenuItem lunchItem2 = new MenuItem("Spicy Southwest Chicken Sandwich", "Fresh Redbird Chicken Breast perfectly grilled with fire roasted green Chiles", 10.95);
+        MenuItem lunchItem3 = new MenuItem("BBQ Pulled Pork Sandwich", "Slow cooked Pulled Pork with BBQ Sauce and Coleslaw on a Bricoche Bun", 11.95);
+        MenuItem lunchItem4 = new MenuItem("Veggie Wrap", "Portabella Mushrooms, Roasted Red pepers, Lettuce, Tomato Wrap", 8.95);
+        lunchMenu.add(lunchItem1);
+        lunchMenu.add(lunchItem2);
+        lunchMenu.add(lunchItem3);
+        lunchMenu.add(lunchItem4);
+        MenuItem dinnerItem1 = new MenuItem("Potato Skins", "Potato Skins topped with melted cheddar Cheese, Bacon Bits, Sour Cream & Cheese", 9.95);
+        MenuItem dinnerItem2 = new MenuItem("Turkey Club", "Hand carved Turkey Breast, Bacon, Lettuce, Tomato, Swiss Cheese & a touch of Mayo piled on our hearty Multi grain Bread", 10.95);
+        MenuItem dinnerItem3 = new MenuItem("Fish & Chips", "Tempurs hand bailered While Fish filets, French Fries with a side of horseadish Dijon", 11.95);
+        MenuItem dinnerItem4 = new MenuItem("Rock Gardens Salad", "Organic Baby Mixed Greens topped with Cranberries, Chopped Tomatos, Red Onions, Feta Cheese served with a pomegranate Vinaigrette", 8.95);
+        dinnerMenu.add(dinnerItem1);
+        dinnerMenu.add(dinnerItem2);
+        dinnerMenu.add(dinnerItem3);
+        dinnerMenu.add(dinnerItem4);
+
+    }
+
+
+    public LinearLayout insertMenuItem(int index, ArrayList<MenuItem> menuLists){
+        LinearLayout menuLine = new LinearLayout(getContext());
+        menuLine.setOrientation(LinearLayout.HORIZONTAL);
+        menuLine.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+        LinearLayout menuItem = new LinearLayout(getContext());
+        menuItem.setOrientation(LinearLayout.VERTICAL);
+        menuItem.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.MATCH_PARENT,2.0f));
+
+        TextView itemName = new TextView(getContext());
+        itemName.setTextColor(Color.parseColor("#ff0000"));
+
+        TextView itemDesc = new TextView(getContext());
+        itemDesc.setTextColor(Color.parseColor("#ffffff"));
+
+
+        itemName.setText(menuLists.get(index).name +" -- $"+menuLists.get(index).price);
+        itemDesc.setText(menuLists.get(index).description);
+        menuItem.addView(itemName);
+        menuItem.addView(itemDesc);
+
+
+        LinearLayout menuButton = new LinearLayout(getContext());
+        menuButton.setOrientation(LinearLayout.HORIZONTAL);
+        menuButton.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.MATCH_PARENT,1.0f));
+
+
+        Button addBtn = new Button(getContext());
+        Button reduceBtn = new Button(getContext());
+
+        addBtn.setLayoutParams(new LinearLayout.LayoutParams(
+                80, 80));
+        addBtn.setTextColor(Color.parseColor("#ffffff"));
+        addBtn.setText("+");
+        addBtn.setId(View.generateViewId());
+        addBtn.setOnClickListener(this);
+        reduceBtn.setLayoutParams(new LinearLayout.LayoutParams(
+                80, 80));
+        reduceBtn.setTextColor(Color.parseColor("#ffffff"));
+        reduceBtn.setText("-");
+        reduceBtn.setId(View.generateViewId());
+        reduceBtn.setOnClickListener(this);
+
+        addbtns.add(addBtn);
+        reducebtns.add(reduceBtn);
+
+        TextView itemQty = new TextView(getContext());
+
+        itemQty.setLayoutParams(new LinearLayout.LayoutParams(
+                80, 80));
+        itemQty.setTextColor(Color.parseColor("#ffffff"));
+        itemQty.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        itemQty.setText("0");
+
+        itemqtys.add(itemQty);
+
+        menuButton.addView(reduceBtn);
+        menuButton.addView(itemQty);
+        menuButton.addView(addBtn);
+        menuLine.addView(menuItem);
+        menuLine.addView(menuButton);
+        return menuLine;
+    }
+
+    public void setupMenu(ArrayList<MenuItem> menuList, LinearLayout rootMenu){
+
+        for(int i=0; i<menuList.size();i++) rootMenu.addView(this.insertMenuItem(i, lunchMenu));
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void onClick(View view){
+
+        for(int i=0; i<addbtns.size();i++){
+
+            if(view.getId()==addbtns.get(i).getId()){
+                TextView itemqty = itemqtys.get(i);
+                int qty = Integer.parseInt(itemqty.getText().toString());
+                qty++;
+
+                itemqty.setText(String.valueOf(qty));
+
+
+            }else if(view.getId()==reducebtns.get(i).getId()){
+                TextView itemqty = itemqtys.get(i);
+                int qty = Integer.parseInt(itemqty.getText().toString());
+                if(qty>0) qty--;
+                itemqty.setText(String.valueOf(qty));
+            }
+
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
 }
